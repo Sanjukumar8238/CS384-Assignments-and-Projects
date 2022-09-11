@@ -1,5 +1,7 @@
 import csv
+from email import header
 import os
+from xml.etree.ElementTree import tostring
 import pandas as pd
 os.chdir(r"C:\Users\Sanju Phogat\Documents\GitHub\2001EE62_2022\tut01")
 
@@ -37,13 +39,31 @@ octant=[]
 for i in df.index:
     octant.append(find_octant(df[r"U'=U - U Avg"][i],df[r"V'=V - V Avg"][i],df[r"W'=W - W Avg"][i]))
 df['Octant']=octant
-    
-
 df.to_csv('output.csv')
-#def octact_identification(mod=5000):
-###Code
 
+count=[0]*8
+for i in octant:
+    if(i==1):
+        count[0]=count[0]+1
+    elif(i==-1):
+        count[1]=count[1]+1
+    elif(i==2):
+        count[2]=count[2]+1
+    elif(i==-2):
+        count[3]=count[3]+1
+    elif(i==3):
+        count[4]=count[4]+1
+    elif(i==-3):
+        count[5]=count[5]+1
+    elif(i==4):
+        count[6]=count[6]+1
+    elif(i==-4):
+        count[7]=count[7]+1
 
-#mod=5000
-#octact_identification(mod)
+print('Octant ID\t1\t-1\t2\t-2\t3\t-3\t4\t-4')
+print('Overall Count\t',end="")
+for i in count:
+    print(i,'\t',end="")
+print("")
+
 
