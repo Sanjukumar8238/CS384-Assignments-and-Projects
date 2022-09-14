@@ -2,6 +2,8 @@ import csv
 import pandas as pd
 import os
 
+mod=5000                                              # User input - Mod value
+
 def find_octant(a,b,c):                             # Function to find the octant 
     if(a>0 and b>0 and c>0):    
         return 1
@@ -84,8 +86,7 @@ for i in octant:                                    # Finding total count of val
 count[0]='Overall Count'                            
 matrix.append(count)                                # Appending total count of values in different octants to the 2-d matrix
 
-x=5000                                              # User input - Mod value
-matrix.append(['User input','Mod '+str(x)])         # Appending this value in the matrix
+matrix.append(['User input','Mod '+str(mod)])         # Appending this value in the matrix
 
 n=len(octant)                                       # Finding the number of points given in the input
 count=[0]*9                                         # Resetting the values in the list 'count'
@@ -108,9 +109,9 @@ for i in octant:                                    # Counting number of values 
     elif(i==-4):
         count[8]=count[8]+1
     k=k+1                                           # Incrementing the index tracking variable
-    if(k%x==1):                                     # Processing the mod values in the range and storing them in the list 'count'
+    if(k%mod==1):                                     # Processing the mod values in the range and storing them in the list 'count'
         count[0]=str(k-1)+'-'                       
-    elif(k%x==0 or k==n):
+    elif(k%mod==0 or k==n):
         count[0]=count[0]+str(k-1)                  # Here count[0]-> represents the range and further elements of count represents the count in different octants
         matrix.append(count)                        # Appending the list in the matrix
         count=[0]*9                                 # Resetting count of values in different octants
