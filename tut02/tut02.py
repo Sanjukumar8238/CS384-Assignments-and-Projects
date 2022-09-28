@@ -140,6 +140,58 @@ for i in octant:                                                # Counting numbe
         matrix.append(count)
         count=[0]*9                                             # Resetting count of values in different octants
 
+count[0]='Verified'                                             # Storing the verified column in 'count' list
+for i in range(1,9):
+    sum=0
+    for z in range(2,len(matrix)):
+        sum+=matrix[z][i]
+    count[i]=sum
+
+for i in range(13,22):                                          # Writing verified row in worksheet
+    ws.cell(row=j,column=i).value=count[i-13] 
+    ws.cell(row=j,column=i).border=thin_border  
+j+=3
+
+ws.cell(row=j,column=13).value='Overall Transition Count'       # Writing overall transition count in worksheet
+ws.cell(row=j+3,column=12).value='From'
+ws.cell(row=j+1,column=14).value='To'
+ws.cell(row=j+1,column=13).value=str(0)+'-'+str(n-1)
+j+=2
+
+matrix.clear()
+matrix = [ [0]*9 for i in range(9)]                             # Creating 9*9 matrix for storing transition count values
+
+for i in range(0,4):                                            # Storing header row and header column in the matrix
+    matrix[0][2*i+1]=(i+1)
+    matrix[0][2*(i+1)]=-(i+1)
+for i in range(0,9):
+    matrix[i][0]=matrix[0][i]
+matrix[0][0]='Count'
+
+dic={}                                                          # creating dictionary for mapping 
+for i in range(0,4):
+    dic[i+1]=2*i+1
+    dic[-(i+1)]=2*(i+1)
+
+def find_row_col(x,y):                                          # Finding row and column of matrix from transition values
+    lst=[dic[x],dic[y]]
+    return lst
+
+prev=octant[0]                                              
+for i in range(1,n):                                            # Filling overall transition matrix
+    lst=find_row_col(prev,octant[i])                            # lst[0]-> row and lst[1]->column of overall transition matrix
+    matrix[lst[0]][lst[1]]+=1
+    prev=octant[i]
+
+for i in range(0,9):                                            # Writing the overall transition matrix in worksheet
+    for k in range(13,22):
+        ws.cell(row=j+i,column=k).value=matrix[i][k-13]
+        ws.cell(row=j+i,column=k).border=thin_border
+        if(i!=0 and k!=13):
+            matrix[i][k-13]=0
+       
+
+                                        
 
 
 wb.save('output_octant_transition_identify.xlsx')                                          # Saving the file
