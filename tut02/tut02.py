@@ -1,10 +1,9 @@
+from distutils.log import error
 import pandas as pd
 import os
 import openpyxl
 from openpyxl import workbook,load_workbook
 from openpyxl.styles.borders import Border, Side
-
-os.chdir(r"C:\Users\Sanju Phogat\Documents\GitHub\2001EE62_2022\tut02")
 
 mod=5000                                                        # User input - Mod value
 
@@ -26,12 +25,21 @@ def find_octant(a,b,c):                                         # Function to fi
     elif(a>0 and b<0 and c<0):
         return -4
 
-df=pd.read_excel('input_octant_transition_identify.xlsx')       # Reading input file and storing in dataframe 'df'
+try:
+    df=pd.read_excel('input_octant_transition_identify.xlsx')       # Reading input file and storing in dataframe 'df'
+except:
+    print("File opening error")
+    exit()
+
 n=len(df['U'])                                                  # Finding number of values
 
-u_avg=df['U'].mean()                                            # Finding average of u,v and w                 
-v_avg=df['V'].mean()
-w_avg=df['W'].mean()
+try:
+    u_avg=df['U'].mean()                                        # Finding average of u,v and w                 
+    v_avg=df['V'].mean()
+    w_avg=df['W'].mean()
+except:
+    print("Error in values of points")
+    exit()
 
 l1=[u_avg]                                                      # Storing values of average of u,v, and w in lists
 l2=[v_avg]
@@ -54,9 +62,19 @@ for i in df.index:                                              # Finding octant
     octant.append(find_octant(df[r"U'=U - U Avg"][i],df[r"V'=V - V Avg"][i],df[r"W'=W - W Avg"][i]))
 
 df['Octant']=octant                                             # Creating a column for storing corresponding octants in dataframe
-df.to_excel('output_octant_transition_identify.xlsx',index=False)                          # Saving the dataframe in file
 
-wb=load_workbook('output_octant_transition_identify.xlsx')                                 # Loading the file in workbook
+try:
+    df.to_excel('output_octant_transition_identify.xlsx',index=False)                          # Saving the dataframe in file
+except:
+    print("Error in writing to output file")
+    exit()
+
+try:
+    wb=load_workbook('output_octant_transition_identify.xlsx')                                 # Loading the file in workbook
+except:
+    print("Error in loading output file")
+    exit()
+
 ws=wb.active
 ws['L3']='User Input'                                           # Putting the string 'User Input' at its specified place
 
@@ -218,5 +236,7 @@ for t in range(0,temp):                                         # One iteration 
                 matrix[i][k-13]=0                               # Resetting matrix for next mod iteration
                                         
 
-
-wb.save('output_octant_transition_identify.xlsx')                                          # Saving the file
+try:
+    wb.save('output_octant_transition_identify.xlsx')                                          # Saving the file
+except:
+    print("Error in saving the output file")
