@@ -26,14 +26,21 @@ def find_octant(a,b,c):                                         # Function to fi
     elif(a>0 and b<0 and c<0):
         return -4
 
-df=pd.read_excel('input_octant_longest_subsequence.xlsx')       # Reading input file and storing in dataframe 'df'
-
+try:
+    df=pd.read_excel('input_octant_longest_subsequence.xlsx')       # Reading input file and storing in dataframe 'df'
+except:
+    print("File open error")
+    exit()
 
 n=len(df['U'])                                                  # Finding number of values
 
-u_avg=df['U'].mean()                                            # Finding average of u,v and w                 
-v_avg=df['V'].mean()
-w_avg=df['W'].mean()
+try:
+    u_avg=df['U'].mean()                                            # Finding average of u,v and w                 
+    v_avg=df['V'].mean()
+    w_avg=df['W'].mean()
+except:
+    print("Error in the values of input")
+    exit()
 
 l1=[u_avg]                                                      # Storing values of average of u,v, and w in lists
 l2=[v_avg]
@@ -58,7 +65,12 @@ for i in df.index:                                              # Finding octant
 df['Octant']=octant                                             # Creating a column for storing corresponding octants in dataframe
 df.to_excel('output_octant_longest_subsequence.xlsx',index=False)                          # Saving the dataframe in file
 
-wb=load_workbook('output_octant_longest_subsequence.xlsx')                                 # Loading the file in workbook
+try:
+    wb=load_workbook('output_octant_longest_subsequence.xlsx')                                 # Loading the file in workbook
+except:
+    print("Error in loading previously written file")
+    exit()
+
 ws=wb.active
 
 thin_border = Border(left=Side(style='thin'),                   # Defining border
@@ -110,5 +122,7 @@ for i in range(2,10):                                           # Writing the nu
     ws.cell(row=i,column=14).border=thin_border
     ws.cell(row=i,column=15).border=thin_border
 
-
-wb.save('output_octant_longest_subsequence.xlsx')                                          # Saving the file
+try:
+    wb.save('output_octant_longest_subsequence.xlsx')                                          # Saving the file
+except:
+    print("Error in saving the output file")
