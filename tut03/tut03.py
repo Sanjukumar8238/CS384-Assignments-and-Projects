@@ -66,21 +66,49 @@ thin_border = Border(left=Side(style='thin'),                   # Defining borde
                      top=Side(style='thin'), 
                      bottom=Side(style='thin'))
 
-r=['Count','Longest Subsequence Length','Count']
-for i in range(3):
+r=['Count','Longest Subsequence Length','Count']                # Header list
+for i in range(3):                                              # Writing header of table to worksheet
     ws.cell(row=1,column=13+i).value=r[i] 
     ws.cell(row=1,column=13+i).border=thin_border    
 
-for i in range(2,10,2):
+for i in range(2,10,2):                                         # Writing octants on leftmost column of the table
     ws.cell(row=i,column=13).value=i//2
     ws.cell(row=i+1,column=13).value=-(i//2) 
     ws.cell(row=i,column=13).border=thin_border
     ws.cell(row=i+1,column=13).border=thin_border                                
 
 dic={}                                                          # creating dictionary for mapping 
-for i in range(0,4):
+for i in range(0,4):                                            
     dic[i+1]=2*i+1-1
     dic[-(i+1)]=2*(i+1)-1
         
+count=[0]*8                                                     # List for storing number of longest subsequence
+longest_length=[0]*8                                            # List for storing length of longest subsequence
+prev=octant[0]
+l=1                                                             # Length of current octant
+for i in range(1,n+1):                                          # Loop for finding number and length of longest subsequence
+    if(i==n):                                                   # IF last is reached process the whole
+        if(longest_length[dic[prev]]<l):                        
+            longest_length[dic[prev]]=l
+            count[dic[prev]]=1
+        elif(longest_length[dic[prev]]==l):
+            count[dic[prev]]+=1
+    elif(prev==octant[i]):                                      # If prev and current values are same, increase current length by 1
+        l+=1
+    else:                                                       # Else process the previous octant values and start with new octant
+        if(longest_length[dic[prev]]<l):
+            longest_length[dic[prev]]=l
+            count[dic[prev]]=1
+        elif(longest_length[dic[prev]]==l):
+            count[dic[prev]]+=1
+        l=1
+        prev=octant[i]
+
+for i in range(2,10):                                           # Writing the number and length of longest subsequence in table
+    ws.cell(row=i,column=14).value=longest_length[i-2]
+    ws.cell(row=i,column=15).value=count[i-2]
+    ws.cell(row=i,column=14).border=thin_border
+    ws.cell(row=i,column=15).border=thin_border
+
 
 wb.save('output_octant_longest_subsequence.xlsx')                                          # Saving the file
