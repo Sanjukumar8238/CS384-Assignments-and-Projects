@@ -56,12 +56,31 @@ for i in df.index:                                              # Finding octant
     octant.append(find_octant(df[r"U'=U - U Avg"][i],df[r"V'=V - V Avg"][i],df[r"W'=W - W Avg"][i]))
 
 df['Octant']=octant                                             # Creating a column for storing corresponding octants in dataframe
-df.to_excel('output_octant_transition_identify.xlsx',index=False)                          # Saving the dataframe in file
+df.to_excel('output_octant_longest_subsequence.xlsx',index=False)                          # Saving the dataframe in file
 
-wb=load_workbook('output_octant_transition_identify.xlsx')                                 # Loading the file in workbook
+wb=load_workbook('output_octant_longest_subsequence.xlsx')                                 # Loading the file in workbook
 ws=wb.active
 
+thin_border = Border(left=Side(style='thin'),                   # Defining border
+                     right=Side(style='thin'), 
+                     top=Side(style='thin'), 
+                     bottom=Side(style='thin'))
 
+r=['Count','Longest Subsequence Length','Count']
+for i in range(3):
+    ws.cell(row=1,column=13+i).value=r[i] 
+    ws.cell(row=1,column=13+i).border=thin_border    
+
+for i in range(2,10,2):
+    ws.cell(row=i,column=13).value=i//2
+    ws.cell(row=i+1,column=13).value=-(i//2) 
+    ws.cell(row=i,column=13).border=thin_border
+    ws.cell(row=i+1,column=13).border=thin_border                                
+
+dic={}                                                          # creating dictionary for mapping 
+for i in range(0,4):
+    dic[i+1]=2*i+1-1
+    dic[-(i+1)]=2*(i+1)-1
         
 
 wb.save('output_octant_longest_subsequence.xlsx')                                          # Saving the file
