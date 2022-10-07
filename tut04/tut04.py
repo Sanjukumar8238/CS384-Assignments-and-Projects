@@ -154,6 +154,9 @@ def octant_longest_subsequence_count_with_range():
     ws.cell(row=k,column=17).value='Count'
     ws.cell(row=k,column=18).value='Longest Subsequence Length'
     ws.cell(row=k,column=19).value='Count'
+    ws.cell(row=k,column=17).border=thin_border
+    ws.cell(row=k,column=18).border=thin_border
+    ws.cell(row=k,column=19).border=thin_border
     
     k+=1
     for i in range(8):
@@ -163,11 +166,20 @@ def octant_longest_subsequence_count_with_range():
         ws.cell(row=k+1,column=17).value='Time'
         ws.cell(row=k+1,column=18).value='From'
         ws.cell(row=k+1,column=19).value='To'
+        ws.cell(row=k,column=17).border=thin_border
+        ws.cell(row=k,column=18).border=thin_border
+        ws.cell(row=k,column=19).border=thin_border
+        ws.cell(row=k+1,column=17).border=thin_border
+        ws.cell(row=k+1,column=18).border=thin_border
+        ws.cell(row=k+1,column=19).border=thin_border
         x=ranges[i]
         k+=2
         for j in x:
             ws.cell(row=k,column=18).value=j[0]
             ws.cell(row=k,column=19).value=j[1]
+            ws.cell(row=k,column=17).border=thin_border
+            ws.cell(row=k,column=18).border=thin_border
+            ws.cell(row=k,column=19).border=thin_border
             k+=1
 
 
