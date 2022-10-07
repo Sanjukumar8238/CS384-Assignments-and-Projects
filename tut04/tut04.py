@@ -3,6 +3,7 @@ import os
 import openpyxl
 from openpyxl import workbook,load_workbook
 from openpyxl.styles.borders import Border, Side
+from itertools import repeat
 
 from datetime import datetime
 start_time = datetime.now()
@@ -109,23 +110,40 @@ count=[0]*8                                                     # List for stori
 longest_length=[0]*8                                            # List for storing length of longest subsequence
 prev=octant[0]
 l=1                                                             # Length of current octant
+
+temp=[0]                                                        # Temporary variable to store range
+ranges= [[] for x in repeat(None, 8)]                           # Empty list of list to store ranges for different octants
+
 for i in range(1,n+1):                                          # Loop for finding number and length of longest subsequence
     if(i==n):                                                   # IF last is reached process the whole
         if(longest_length[dic[prev]]<l):                        
             longest_length[dic[prev]]=l
             count[dic[prev]]=1
+            temp.append(df['Time'][i-1])
+            ranges[dic[prev]].clear()
+            ranges[dic[prev]].append(temp)
         elif(longest_length[dic[prev]]==l):
             count[dic[prev]]+=1
+            temp.append(df['Time'][i-1])
+            ranges[dic[prev]].append(temp)
     elif(prev==octant[i]):                                      # If prev and current values are same, increase current length by 1
         l+=1
     else:                                                       # Else process the previous octant values and start with new octant
         if(longest_length[dic[prev]]<l):
             longest_length[dic[prev]]=l
             count[dic[prev]]=1
+            ranges[dic[prev]].clear()
+            temp.append(df['Time'][i-1])
+            ranges[dic[prev]].append(temp)
         elif(longest_length[dic[prev]]==l):
             count[dic[prev]]+=1
+            temp.append(df['Time'][i-1])
+            ranges[dic[prev]].append(temp)
+        temp=[df['Time'][i]]
         l=1
         prev=octant[i]
+
+print(ranges)
 
 for i in range(2,10):                                           # Writing the number and length of longest subsequence in table
     ws.cell(row=i,column=14).value=longest_length[i-2]
