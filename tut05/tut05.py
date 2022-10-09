@@ -99,7 +99,7 @@ def octant_range_names(mod=5000):
     
     rank_matrix=[]
     ws=wb.active
-    ws['L3']='User Input'                                           # Putting the string 'User Input' at its specified place
+    ws['L4']='User Input'                                           # Putting the string 'User Input' at its specified place
 
     matrix=[]                                                       # 2-d matrix for storing octants within ranges
     count=[0]*9                                                     # Creating a list for storing elements of 9 columns
@@ -111,7 +111,12 @@ def octant_range_names(mod=5000):
         count[2*(i+1)]=-(i+1)
     matrix.append(count)                                            # Appending header list in matrix
     for i in range(13,22):                                          # Writing header list in worksheet
-        ws.cell(row=1,column=i).value=count[i-13]
+        ws.cell(row=2,column=i).value=count[i-13]
+        if(i>13):
+            ws.cell(row=1,column=i+8).value=count[i-13]
+            ws.cell(row=2,column=i+8).value='Rank '+str(i-13)
+    ws.cell(row=2,column=30).value='Rank1 Octant ID'
+    ws.cell(row=2,column=31).value='Rank1 Octant Name'
     count=[0]*9                                                     # Resetting values in list 'count'
 
     for i in octant:                                                # Finding total count of values in different octants
@@ -135,11 +140,14 @@ def octant_range_names(mod=5000):
     count[0]='Overall Count'                                        # Creating overall count row
     matrix.append(count)                                           
     for i in range(13,22):                                          # Writing overall count in worksheet
-        ws.cell(row=2,column=i).value=count[i-13]
+        ws.cell(row=3,column=i).value=count[i-13]
     count.pop(0)
     rank=find_rank_of_list(count)
     rank_matrix.append(rank)
-    ws.cell(row=3,column=13).value='Mod '+str(mod)                  # Writing mod value at specified cell
+    for i in range(8):                                              # Writing overall count in worksheet
+        ws.cell(row=3,column=22+i).value=rank_matrix[0][i]
+    
+    ws.cell(row=4,column=13).value='Mod '+str(mod)                  # Writing mod value at specified cell
                             
 
 
@@ -170,16 +178,17 @@ def octant_range_names(mod=5000):
         elif(k%mod==0 or k==n):
             count[0]=count[0]+str(k-1)                              # Here count[0]-> represents the range and further elements of count represents the count in different octants
             for i in range(13,22):                                  # Writing the mod count of octant in worksheet
-                ws.cell(row=j,column=i).value=count[i-13]
+                ws.cell(row=j+1,column=i).value=count[i-13]
             count.pop(0)
             rank=find_rank_of_list(count)
             rank_matrix.append(rank)
+
+            for i in range(8):                                 
+                ws.cell(row=j+1,column=22+i).value=rank_matrix[j-3][i]
+
             j=j+1                                                   # Incrementing row
             matrix.append(count)
-            count=[0]*9                                             # Resetting count of values in different octants
-
-    print(rank_matrix)
-    
+            count=[0]*9                                             # Resetting count of values in different octants    
                                             
 
     try:
