@@ -9,6 +9,14 @@ start_time = datetime.now()
 #Help https://youtu.be/N6PBd4XdnEw
 def octant_range_names(mod=5000):
     octant_name_id_mapping = {"1":"Internal outward interaction", "-1":"External outward interaction", "2":"External Ejection", "-2":"Internal Ejection", "3":"External inward interaction", "-3":"Internal inward interaction", "4":"Internal sweep", "-4":"External sweep"}
+    dic={}                                                          # creating dictionary for mapping 
+    opp_dic={}
+    for i in range(0,4):                                            
+        dic[i+1]=2*i+1-1
+        dic[-(i+1)]=2*(i+1)-1
+        opp_dic[2*i+1-1]=i+1
+        opp_dic[2*(i+1)-1]=-(i+1)
+    
     def find_octant(a,b,c):                                         # Function to find the octant 
         if(a>0 and b>0 and c>0):    
             return 1
@@ -77,6 +85,19 @@ def octant_range_names(mod=5000):
         print("Error in loading output file")
         exit()
 
+    def find_rank_of_list(lst):
+        temp_lst=lst.copy()
+        temp_lst.sort(reverse=True)
+        res=[]
+
+        for i in lst:
+            for j in range(0,8):
+                if(i==temp_lst[j]):
+                    res.append(j+1)
+        return res
+
+    
+    rank_matrix=[]
     ws=wb.active
     ws['L3']='User Input'                                           # Putting the string 'User Input' at its specified place
 
@@ -84,8 +105,6 @@ def octant_range_names(mod=5000):
     count=[0]*9                                                     # Creating a list for storing elements of 9 columns
 
     count[0]='Octant ID'                                            # Storing header list in 'count' list
-
-
 
     for i in range(0,4):
         count[2*i+1]=(i+1)
@@ -117,6 +136,9 @@ def octant_range_names(mod=5000):
     matrix.append(count)                                           
     for i in range(13,22):                                          # Writing overall count in worksheet
         ws.cell(row=2,column=i).value=count[i-13]
+    count.pop(0)
+    rank=find_rank_of_list(count)
+    rank_matrix.append(rank)
     ws.cell(row=3,column=13).value='Mod '+str(mod)                  # Writing mod value at specified cell
                             
 
@@ -149,10 +171,15 @@ def octant_range_names(mod=5000):
             count[0]=count[0]+str(k-1)                              # Here count[0]-> represents the range and further elements of count represents the count in different octants
             for i in range(13,22):                                  # Writing the mod count of octant in worksheet
                 ws.cell(row=j,column=i).value=count[i-13]
+            count.pop(0)
+            rank=find_rank_of_list(count)
+            rank_matrix.append(rank)
             j=j+1                                                   # Incrementing row
             matrix.append(count)
             count=[0]*9                                             # Resetting count of values in different octants
 
+    print(rank_matrix)
+    
                                             
 
     try:
