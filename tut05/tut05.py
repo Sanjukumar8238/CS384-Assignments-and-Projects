@@ -6,6 +6,8 @@ from openpyxl.styles.borders import Border, Side
 from datetime import datetime
 start_time = datetime.now()
 
+mod=5000 
+
 #Help https://youtu.be/N6PBd4XdnEw
 def octant_range_names(mod=5000):
     octant_name_id_mapping = {"1":"Internal outward interaction", "-1":"External outward interaction", "2":"External Ejection", "-2":"Internal Ejection", "3":"External inward interaction", "-3":"Internal inward interaction", "4":"Internal sweep", "-4":"External sweep"}
@@ -74,13 +76,13 @@ def octant_range_names(mod=5000):
     df['Octant']=octant                                             # Creating a column for storing corresponding octants in dataframe
 
     try:
-        df.to_excel('output_octant_transition_identify.xlsx',index=False)                          # Saving the dataframe in file
+        df.to_excel('octant_output_ranking_excel.xlsx',index=False)                          # Saving the dataframe in file
     except:
         print("Error in writing to output file")
         exit()
 
     try:
-        wb=load_workbook('output_octant_transition_identify.xlsx')                                 # Loading the file in workbook
+        wb=load_workbook('octant_output_ranking_excel.xlsx')                                 # Loading the file in workbook
     except:
         print("Error in loading output file")
         exit()
@@ -95,9 +97,21 @@ def octant_range_names(mod=5000):
                 if(i==temp_lst[j]):
                     res.append(j+1)
         return res
+    
+    def find_1st_rank(lst):
+        for i in range(8):
+            if(lst[i]==1):
+                return opp_dic[i]
 
+    def count_rank1(lst,x):
+        sum=0
+        for i in lst:
+            if(x==i):
+                sum+=1
+        return sum
     
     rank_matrix=[]
+    rank1_list=[]
     ws=wb.active
     ws['L4']='User Input'                                           # Putting the string 'User Input' at its specified place
 
@@ -143,10 +157,12 @@ def octant_range_names(mod=5000):
         ws.cell(row=3,column=i).value=count[i-13]
     count.pop(0)
     rank=find_rank_of_list(count)
+    rank1_list.append(find_1st_rank(rank))
     rank_matrix.append(rank)
     for i in range(8):                                              # Writing overall count in worksheet
         ws.cell(row=3,column=22+i).value=rank_matrix[0][i]
-    
+    ws.cell(row=3,column=30).value=rank1_list[0]
+    ws.cell(row=3,column=31).value=octant_name_id_mapping[str(rank1_list[0])]
     ws.cell(row=4,column=13).value='Mod '+str(mod)                  # Writing mod value at specified cell
                             
 
@@ -181,18 +197,32 @@ def octant_range_names(mod=5000):
                 ws.cell(row=j+1,column=i).value=count[i-13]
             count.pop(0)
             rank=find_rank_of_list(count)
+            rank1_list.append(find_1st_rank(rank))
             rank_matrix.append(rank)
 
             for i in range(8):                                 
                 ws.cell(row=j+1,column=22+i).value=rank_matrix[j-3][i]
+            ws.cell(row=j+1,column=30).value=rank1_list[j-3]
+            ws.cell(row=j+1,column=31).value=octant_name_id_mapping[str(rank1_list[j-3])]
 
             j=j+1                                                   # Incrementing row
             matrix.append(count)
             count=[0]*9                                             # Resetting count of values in different octants    
                                             
+    rank1_list.pop(0)
+
+    ws.cell(row=14,column=14).value='Octant ID'
+    ws.cell(row=14,column=15).value='Octant Name'
+    ws.cell(row=14,column=16).value='Count of Rank 1 Mod Values'
+
+    for i in range(8):
+        ws.cell(row=15+i,column=14).value=opp_dic[i]
+        ws.cell(row=15+i,column=15).value=octant_name_id_mapping[str(opp_dic[i])]
+        ws.cell(row=15+i,column=16).value=count_rank1(rank1_list,opp_dic[i])
+
 
     try:
-        wb.save('output_octant_transition_identify.xlsx')                                          # Saving the file
+        wb.save('octant_output_ranking_excel.xlsx')                                          # Saving the file
     except:
         print("Error in saving the output file")
 
@@ -206,7 +236,7 @@ else:
     print("Please install 3.8.10. Instruction are present in the GitHub Repo/Webmail. Url: https://pastebin.com/nvibxmjw")
 
 
-mod=5000 
+
 octant_range_names(mod)
 
 
