@@ -96,7 +96,22 @@ def attendance_report():
             percentage=round(attendence_count_actual[roll_numbers[i]]*100/total_lectures,2)
             writer.writerow([roll_numbers[i],name[roll_numbers[i]],total_lectures,attendence_count_actual[roll_numbers[i]],attendence_count_fake[roll_numbers[i]],absent,percentage])  
     
-
+    with open('output/%s.csv'%'attendance_report_duplicate','w',newline='') as f:         
+        writer=csv.writer(f)
+        header_list=['Timestamp','Roll','Name','Total count of attendance on that day']
+        writer.writerow(header_list)
+        for i in range(total_lectures):
+            date_of_duplicate=lectures[i]
+            roll_numbers_on_that_day=roll_numbers_in_specific_date[i]
+            roll_numbers_on_that_day.sort()
+            count_of_roll={}
+            for j in range(221):
+                count_of_roll[roll_numbers[j]]=0
+            for j in range(len(roll_numbers_on_that_day)):
+                count_of_roll[roll_numbers_on_that_day[j]]+=1
+            for key,value in count_of_roll.items():
+                if(value>1):
+                    writer.writerow([date_of_duplicate,key,name[key],value])
 
 from platform import python_version
 ver = python_version()
