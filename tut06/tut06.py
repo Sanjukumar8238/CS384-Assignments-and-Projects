@@ -87,6 +87,14 @@ def attendance_report():
             percentage=round(attendence_count_actual[roll_numbers[i]]*100/total_lectures,2)
             writer.writerow([roll_numbers[i],name[roll_numbers[i]],total_lectures,attendence_count_actual[roll_numbers[i]],attendence_count_fake[roll_numbers[i]],absent,percentage])
 
+    with open('output/%s.csv'%'attendance_report_consolidated','w',newline='') as f:         
+        writer=csv.writer(f)
+        header_list=['Roll','Name','total_lecture_taken','attendance_count_actual','attendance_count_fake','attendance_count_absent','Percentage (attendance_count_actual/total_lecture_taken) 2 digit decimal ']
+        writer.writerow(header_list)
+        for i in range(221):
+            absent=total_lectures-attendence_count_actual[roll_numbers[i]]-attendence_count_fake[roll_numbers[i]]
+            percentage=round(attendence_count_actual[roll_numbers[i]]*100/total_lectures,2)
+            writer.writerow([roll_numbers[i],name[roll_numbers[i]],total_lectures,attendence_count_actual[roll_numbers[i]],attendence_count_fake[roll_numbers[i]],absent,percentage])  
     
 
 
