@@ -52,7 +52,7 @@ def attendance_report():                                            # Function t
 
             if(date_obj.weekday()==0 or date_obj.weekday()==3):     # Checking if the date is on Monday or Thursday
                 lectures.add(date)                                  # Adding the date to lectures if date is on Monday and Thursday
-                if(time=='14'):                                     # If time is from 2pm to 3pm proceed:
+                if(time=='14' or date_and_time[1]=='15:00:00'):                                     # If time is from 2pm to 3pm proceed:
                     if(date not in dates_marked[rolls[roll_no]] and roll_no in roll_numbers):       # Checking if roll numbers are of registered students and if that date is already marked by the student
                         attendence_count_actual[roll_no]+=1                                         # Incrementing actual attendance count by 1
                         dates_marked[rolls[roll_no]].append(date)                                   # Appending the date corresponding to the roll number
@@ -79,8 +79,10 @@ def attendance_report():                                            # Function t
             format="%d/%m/%Y"                                       # Formatting the date
             date_obj=datetime.strptime(date,format)                 # Converting date string to date object supported by python
 
-            if(roll_no in roll_numbers):                            
-                roll_numbers_in_specific_date[date_mapping[date]].append(roll_no)       # Appending the roll number in the specific date     
+            if(date_obj.weekday()==0 or date_obj.weekday()==3):     # Checking if the date is on Monday or Thursday
+                if(time=='14' or date_and_time[1]=='15:00:00'):                                     # If time is from 2pm to 3pm proceed:
+                    if(roll_no in roll_numbers):       # Checking if roll numbers are of registered students and if that date is already marked by the student
+                        roll_numbers_in_specific_date[date_mapping[date]].append(roll_no)       # Appending the roll number in the specific date     
         except:
             continue
 
@@ -111,7 +113,7 @@ def attendance_report():                                            # Function t
         for i in range(total_lectures):
             date_of_duplicate=lectures[i]
             roll_numbers_on_that_day=roll_numbers_in_specific_date[i]
-            roll_numbers_on_that_day.sort()
+            roll_numbers_on_that_day.sort() 
             count_of_roll={}
             for j in range(221):                                                                # Initializing the count of roll no. on particular lecture
                 count_of_roll[roll_numbers[j]]=0
