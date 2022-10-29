@@ -240,9 +240,93 @@ def octant_analysis(mod=5000):
 				ws.cell(row=13+i,column=30).border=thin_border
 				ws.cell(row=13+i,column=31).border=thin_border
 		
+			
+		def octant_transition_count(mod=5000):
+			j=1
+			n=len(octant)
+			ws.cell(row=j,column=35).value='Overall Transition Count'       # Writing overall transition count in worksheet
+			ws.cell(row=j+3,column=34).value='From'
+			ws.cell(row=j+1,column=36).value='To'
+			j+=2
+			
+			matrix = [ [0]*9 for i in range(9)]                             # Creating 9*9 matrix for storing transition count values
+			
+			for i in range(0,4):                                            # Storing header row and header column in the matrix
+				matrix[0][2*i+1]=(i+1)
+				matrix[0][2*(i+1)]=-(i+1)
+			for i in range(0,9):
+				matrix[i][0]=matrix[0][i]
+			matrix[0][0]='Octant #'
+
+			dic={}                                                          # creating dictionary for mapping 
+			for i in range(0,4):
+				dic[i+1]=2*i+1
+				dic[-(i+1)]=2*(i+1)
+
+			def find_row_col(x,y):                                          # Finding row and column of matrix from transition values
+				lst=[dic[x],dic[y]]
+				return lst
+			
+			def find_max_ele(lst):
+				temp=lst.copy()
+				temp.pop(0)
+				large=0
+				for i in temp:
+					if(large<i):
+						large=i
+				return large
+
+			prev=octant[0]                                              
+			for i in range(1,n):                                            # Filling overall transition matrix
+				lst=find_row_col(prev,octant[i])                            # lst[0]-> row and lst[1]->column of overall transition matrix
+				matrix[lst[0]][lst[1]]+=1
+				prev=octant[i]
+			yellow = "00FFFF00"
+			for i in range(0,9):                                            # Writing the overall transition matrix in worksheet
+				temp_lst=matrix[i]
+				large=find_max_ele(temp_lst)
+				for k in range(13,22):
+					ws.cell(row=j+i,column=k+22).value=matrix[i][k-13]
+					ws.cell(row=j+i,column=k+22).border=thin_border
+					if(i>0 and matrix[i][k-13]==large):
+						ws.cell(row=j+i,column=k+22).fill=PatternFill(start_color=yellow,end_color=yellow,fill_type="solid")
+					if(i!=0 and k!=13):
+						matrix[i][k-13]=0
+				
+			temp=n//mod+1                                                   # temp-> No. of mod transition tables
+			j+=1
+			for t in range(0,temp):                                         # One iteration for each mod transition table
+				j+=11
+				name=''
+				ws.cell(row=j,column=35).value='Mod Transition Count'       # Writing Table name in worksheet
+				ws.cell(row=j+3,column=34).value='From'
+				ws.cell(row=j+1,column=36).value='To'
+				name=str(t*mod)+'-'
+				if((t+1)*mod-1>n-1):
+					name+=str(n-1)
+				else:
+					name+=str((t+1)*mod-1)   
+				ws.cell(row=j+1,column=35).value=name
+				j+=2
+
+				for i in range(t*mod,min(n-1,(t+1)*mod)):                   # Incrementing matrix cell corresponding to transition values
+					lst=find_row_col(octant[i],octant[i+1])
+					matrix[lst[0]][lst[1]]+=1
+
+				for i in range(0,9):                                        # Writing the transition mod matrix in worksheet
+					temp_lst=matrix[i]
+					if(i>0):
+						large=find_max_ele(temp_lst)
+					for k in range(13,22):
+						ws.cell(row=j+i,column=k+22).value=matrix[i][k-13]
+						ws.cell(row=j+i,column=k+22).border=thin_border
+						if(i>0 and matrix[i][k-13]==large):
+							ws.cell(row=j+i,column=k+22).fill=PatternFill(start_color=yellow,end_color=yellow,fill_type="solid")
+						if(i!=0 and k!=13):
+							matrix[i][k-13]=0                               # Resetting matrix for next mod iteration
+
 		
-		
-		# octant_transition_count(mod=5000)
+		octant_transition_count(mod=5000)
 		octant_range_names(5000)
 		# octant_longest_subsequence_count_with_range()
 		s=s[:-5]
