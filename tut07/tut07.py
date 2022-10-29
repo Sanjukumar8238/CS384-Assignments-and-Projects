@@ -240,6 +240,102 @@ def octant_analysis(mod=5000):
 				ws.cell(row=13+i,column=30).border=thin_border
 				ws.cell(row=13+i,column=31).border=thin_border
 		
+		def octant_longest_subsequence_count_with_range():
+
+			r=['Count','Longest Subsequence Length','Count']                # Header list
+			for i in range(3):                                              # Writing header of table to worksheet
+				ws.cell(row=3,column=45+i).value=r[i] 
+				ws.cell(row=3,column=45+i).border=thin_border    
+
+
+			octants=[]
+			for i in range(2,10,2):                                         # Writing octants on leftmost column of the table
+				ws.cell(row=i+2,column=45).value=i//2
+				octants.append(i//2)
+				ws.cell(row=i+3,column=45).value=-(i//2) 
+				octants.append(-i//2)
+				ws.cell(row=i+2,column=45).border=thin_border
+				ws.cell(row=i+3,column=45).border=thin_border                                
+			
+			dic={}                                                          # creating dictionary for mapping 
+			for i in range(0,4):                                            
+				dic[i+1]=2*i+1-1
+				dic[-(i+1)]=2*(i+1)-1
+					
+			count=[0]*8                                                     # List for storing number of longest subsequence
+			longest_length=[0]*8                                            # List for storing length of longest subsequence
+			prev=octant[0]
+			l=1                                                             # Length of current octant
+			n=len(octant)
+			temp=[0]                                                        # Temporary variable to store range
+			ranges= [[] for x in repeat(None, 8)]                           # Empty list of list to store ranges for different octants
+
+			for i in range(1,n+1):                                          # Loop for finding number and length of longest subsequence
+				if(i==n):                                                   # IF last is reached process the whole
+					if(longest_length[dic[prev]]<l):                        
+						longest_length[dic[prev]]=l
+						count[dic[prev]]=1
+						temp.append(df['T'][i-1])                        # Writing ending range in temp
+						ranges[dic[prev]].clear()                           # Clearing range for that octant because current longest length is small
+						ranges[dic[prev]].append(temp)                      # Writing longest range for specific octant
+					elif(longest_length[dic[prev]]==l):
+						count[dic[prev]]+=1
+						temp.append(df['T'][i-1])
+						ranges[dic[prev]].append(temp)                      # Appending more ranges to the octant
+				elif(prev==octant[i]):                                      # If prev and current values are same, increase current length by 1
+					l+=1
+				else:                                                       # Else process the previous octant values and start with new octant
+					if(longest_length[dic[prev]]<l):
+						longest_length[dic[prev]]=l
+						count[dic[prev]]=1
+						ranges[dic[prev]].clear()                           # Clearing range for that octant because current longest length is small
+						temp.append(df['T'][i-1])                        # Writing ending range in temp
+						ranges[dic[prev]].append(temp)                      # Writing longest range for specific octant
+					elif(longest_length[dic[prev]]==l):
+						count[dic[prev]]+=1
+						temp.append(df['T'][i-1])
+						ranges[dic[prev]].append(temp)                      # Appending more ranges to the octant
+					temp=[df['T'][i]]                                    # Writing starting of range in temp variable
+					l=1
+					prev=octant[i]                                          # Updating previous octant for next octant
+
+			
+			for i in range(2,10):                                           # Writing the number and length of longest subsequence in table
+				ws.cell(row=i+2,column=46).value=longest_length[i-2]
+				ws.cell(row=i+2,column=47).value=count[i-2]
+				ws.cell(row=i+2,column=46).border=thin_border
+				ws.cell(row=i+2,column=47).border=thin_border
+			k=2                                                             # Variable to keep track of row in worksheet
+			ws.cell(row=k+1,column=49).value='Octant ###'                          # Writing heading of table
+			ws.cell(row=k+1,column=50).value='Longest Subsequence Length'
+			ws.cell(row=k+1,column=51).value='Count'
+			ws.cell(row=k+1,column=49).border=thin_border
+			ws.cell(row=k+1,column=50).border=thin_border
+			ws.cell(row=k+1,column=51).border=thin_border
+			
+			k+=2
+			for i in range(8):
+				ws.cell(row=k,column=49).value=octants[i]                   # Writing contents of table-1 for each octant
+				ws.cell(row=k,column=50).value=longest_length[i]
+				ws.cell(row=k,column=51).value=count[i]
+				ws.cell(row=k+1,column=49).value='Time'                     # Writing header of ranges in worksheet
+				ws.cell(row=k+1,column=50).value='From'
+				ws.cell(row=k+1,column=51).value='To'
+				ws.cell(row=k,column=49).border=thin_border                 # Adding border to cells
+				ws.cell(row=k,column=50).border=thin_border
+				ws.cell(row=k,column=51).border=thin_border
+				ws.cell(row=k+1,column=49).border=thin_border
+				ws.cell(row=k+1,column=50).border=thin_border
+				ws.cell(row=k+1,column=51).border=thin_border
+				x=ranges[i]
+				k+=2
+				for j in x:
+					ws.cell(row=k,column=50).value=j[0]                     # Writing ranges in worksheet
+					ws.cell(row=k,column=51).value=j[1]
+					ws.cell(row=k,column=49).border=thin_border             # Adding border to cells
+					ws.cell(row=k,column=50).border=thin_border
+					ws.cell(row=k,column=51).border=thin_border
+					k+=1
 			
 		def octant_transition_count(mod=5000):
 			j=1
@@ -328,7 +424,7 @@ def octant_analysis(mod=5000):
 		
 		octant_transition_count(mod=5000)
 		octant_range_names(5000)
-		# octant_longest_subsequence_count_with_range()
+		octant_longest_subsequence_count_with_range()
 		s=s[:-5]
 		file_name='output/'+s+' cm_vel_octant_analysis_mod_'+str(mod)+'.xlsx'
 		wb.save(file_name)
