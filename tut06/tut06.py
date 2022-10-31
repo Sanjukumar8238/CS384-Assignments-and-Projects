@@ -40,6 +40,8 @@ def attendance_report():                                            # Function t
     df1=pd.read_csv('input_attendance.csv')                         # Reading input_attendace file 
     df = df1[df1['Attendance'].notnull()]                           # Removing the rows which have name as empty
 
+    lectures=['28/07/2022','01/08/2022','04/08/2022','08/08/2022','11/08/2022','18/08/2022','22/08/2022','25/08/2022','29/08/2022','01/09/2022','05/09/2022','08/09/2022','12/09/2022','15/09/2022']
+
     for i in df.index:                                              # Iterating through the dataframe of input_attendace file
         try:                                                
             date_and_time=df['Timestamp'][i].split()                # Storing date and time from the column 'Timestamp'
@@ -47,11 +49,8 @@ def attendance_report():                                            # Function t
             roll_no=roll_no_and_name.split()[0]                     # Finding roll number by splitting the variable roll_no_and_name
             date=date_and_time[0]                                   # Finding date from date_and_time variable
             time=date_and_time[1].split(':')[0]                     # Finding hour of time from date and time variable by splitting
-            format="%d/%m/%Y"                                       # Formatting the date
-            date_obj=datetime.strptime(date,format)                 # Converting date string to date object supported by python
 
-            if(date_obj.weekday()==0 or date_obj.weekday()==3):     # Checking if the date is on Monday or Thursday
-                lectures.add(date)                                  # Adding the date to lectures if date is on Monday and Thursday
+            if(date in lectures):                                   # Checking if the date is on the given lectures
                 if(time=='14' or date_and_time[1]=='15:00:00'):                                     # If time is from 2pm to 3pm proceed:
                     if(date not in dates_marked[rolls[roll_no]] and roll_no in roll_numbers):       # Checking if roll numbers are of registered students and if that date is already marked by the student
                         attendence_count_actual[roll_no]+=1                                         # Incrementing actual attendance count by 1
@@ -64,10 +63,11 @@ def attendance_report():                                            # Function t
             continue                                                # If any error occurs move to next row
             
     total_lectures=len(lectures)                                    # Counting total number of lectures
-    lectures=list(lectures)                                         # Converting set to list
     for i in range(total_lectures):                                 # Mapping each leture to integer
         date_mapping[lectures[i]]=i
     roll_numbers_in_specific_date=[[] for _ in range(total_lectures)]   # Storing roll numbers in a particular day
+
+    first_timeline = [[0 for _ in range(len(roll_numbers))] for _ in range(total_lectures)]
 
     for i in df.index:
         try:
@@ -79,7 +79,10 @@ def attendance_report():                                            # Function t
             format="%d/%m/%Y"                                       # Formatting the date
             date_obj=datetime.strptime(date,format)                 # Converting date string to date object supported by python
 
-            if(date_obj.weekday()==0 or date_obj.weekday()==3):     # Checking if the date is on Monday or Thursday
+            if(first_timeline[date_mapping[date]][rolls[roll_no]]==0):
+                first_timeline[date_mapping[date]][rolls[roll_no]]=df['Timestamp'][i]
+
+            if(date in lectures):                                   # Checking if the date is on Monday or Thursday
                 if(time=='14' or date_and_time[1]=='15:00:00'):                                     # If time is from 2pm to 3pm proceed:
                     if(roll_no in roll_numbers):       # Checking if roll numbers are of registered students and if that date is already marked by the student
                         roll_numbers_in_specific_date[date_mapping[date]].append(roll_no)       # Appending the roll number in the specific date     
@@ -113,7 +116,6 @@ def attendance_report():                                            # Function t
         for i in range(total_lectures):
             date_of_duplicate=lectures[i]
             roll_numbers_on_that_day=roll_numbers_in_specific_date[i]
-            roll_numbers_on_that_day.sort() 
             count_of_roll={}
             for j in range(221):                                                                # Initializing the count of roll no. on particular lecture
                 count_of_roll[roll_numbers[j]]=0
@@ -121,7 +123,7 @@ def attendance_report():                                            # Function t
                 count_of_roll[roll_numbers_on_that_day[j]]+=1                                   # Incrementing the count of roll no.
             for key,value in count_of_roll.items():
                 if(value>1):                                                                    # If attendance is more than 1 on particular day write it in the file
-                    writer.writerow([date_of_duplicate,key,name[key],value])                    # Writing the duplicate information  
+                    writer.writerow([first_timeline[date_mapping[date_of_duplicate]][rolls[key]],key,name[key],value])                    # Writing the duplicate information  
     
     def send_email():                                                                           # Function to send email to cs3842022@gmail.com
         try:
