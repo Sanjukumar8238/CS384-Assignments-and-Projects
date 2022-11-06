@@ -44,7 +44,11 @@ def octant_analysis(mod=5000):
 
 	def process_file(s,mod):										# Function to process individual file
 		in_file='input/'+s											# Path to file
-		df=read_excel(in_file)										# Reading file in dataframe
+		try:
+			df=read_excel(in_file)										# Reading file in dataframe
+		except:
+			print('Error in opening the input file')
+			return
 		wb=Workbook()												# Starting a new workbook
 		ws=wb.active													
 		lst=['T','U','V','W','U Avg','V Avg','W Avg',r"U'=U-U avg",r"V'=V-V avg",r"W'=W-W avg",'Octant']
@@ -217,28 +221,28 @@ def octant_analysis(mod=5000):
 					ws.cell(row=j+1,column=31).value=rank1_list[j-3]
 					ws.cell(row=j+1,column=32).value=octant_name_id_mapping[str(rank1_list[j-3])]
 					ws.cell(row=j+1,column=31).border=thin_border
-					ws.cell(row=j+1,column=31).border=thin_border
+					ws.cell(row=j+1,column=32).border=thin_border
 					
 					j=j+1                                                   # Incrementing row
 					matrix.append(count)
 					count=[0]*9                                             # Resetting count of values in different octants    
 													
 			rank1_list.pop(0)                                               # Removing the overall rank1 octant
-			
-			ws.cell(row=12,column=29).value='Octant ID'                     # Writing the header of table of count of rank1 mod values
-			ws.cell(row=12,column=30).value='Octant Name'
-			ws.cell(row=12,column=31).value='Count of Rank 1 Mod Values'
-			ws.cell(row=12,column=29).border=thin_border                 
-			ws.cell(row=12,column=30).border=thin_border
-			ws.cell(row=12,column=31).border=thin_border
+			j+=4
+			ws.cell(row=j,column=29).value='Octant ID'                     # Writing the header of table of count of rank1 mod values
+			ws.cell(row=j,column=30).value='Octant Name'
+			ws.cell(row=j,column=31).value='Count of Rank 1 Mod Values'
+			ws.cell(row=j,column=29).border=thin_border                 
+			ws.cell(row=j,column=30).border=thin_border
+			ws.cell(row=j,column=31).border=thin_border
 			
 			for i in range(8):                                              # Writing the table of count of rank1 mod values
-				ws.cell(row=13+i,column=29).value=opp_dic[i]
-				ws.cell(row=13+i,column=30).value=octant_name_id_mapping[str(opp_dic[i])]
-				ws.cell(row=13+i,column=31).value=count_rank1(rank1_list,opp_dic[i])
-				ws.cell(row=13+i,column=29).border=thin_border
-				ws.cell(row=13+i,column=30).border=thin_border
-				ws.cell(row=13+i,column=31).border=thin_border
+				ws.cell(row=j+1+i,column=29).value=opp_dic[i]
+				ws.cell(row=j+1+i,column=30).value=octant_name_id_mapping[str(opp_dic[i])]
+				ws.cell(row=j+1+i,column=31).value=count_rank1(rank1_list,opp_dic[i])
+				ws.cell(row=j+1+i,column=29).border=thin_border
+				ws.cell(row=j+1+i,column=30).border=thin_border
+				ws.cell(row=j+1+i,column=31).border=thin_border
 		
 		def octant_longest_subsequence_count_with_range():
 
@@ -422,17 +426,20 @@ def octant_analysis(mod=5000):
 							matrix[i][k-13]=0                               # Resetting matrix for next mod iteration
 
 		
-		octant_transition_count(mod=5000)
-		octant_range_names(5000)
+		octant_transition_count(mod)
+		octant_range_names(mod)
 		octant_longest_subsequence_count_with_range()
 		s=s[:-5]
 		file_name='output/'+s+' cm_vel_octant_analysis_mod_'+str(mod)+'.xlsx'
 		wb.save(file_name)
-	
-	os.mkdir('output')
+	try:
+		os.mkdir('output')
+	except:
+		pass
 	input_files=os.listdir('input')
 	for i in range(len(input_files)):
 		process_file(input_files[i],mod)
+		print(input_files[i]," Processed")
 		
 
 
