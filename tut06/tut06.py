@@ -91,6 +91,35 @@ def attendance_report():                                            # Function t
                 ws.cell(row=j+3,column=8).value=0
         wb.save(r"output/%s.xlsx"%roll_numbers[i])
     
+    wb=openpyxl.Workbook()
+    ws=wb.active
+    ws.cell(row=1,column=1).value='Roll'
+    ws.cell(row=1,column=1).value='Name'
+    for i in range(len(lectures)):
+        ws.cell(row=1,column=2+i).value=lectures[i]
+    ws.cell(row=1,column=3+len(lectures)).value='Actual Lecture Taken'
+    ws.cell(row=1,column=4+len(lectures)).value='Total Real'
+    ws.cell(row=1,column=5+len(lectures)).value='% Attendance'
+
+    for i in range(n):
+        ws.cell(row=i+2,column=1).value=roll_numbers[i]
+        ws.cell(row=i+2,column=2).value=name[roll_numbers[i]]
+        k=3
+        count=0
+        for j in range(len(lectures)):
+            if(matrix[j][i][1]==1):
+                ws.cell(row=i+2,column=k).value='P'
+                count+=1
+            else:
+                ws.cell(row=i+2,column=k).value='A'
+            k+=1
+        ws.cell(row=i+2,column=k).value=len(lectures)
+        ws.cell(row=i+2,column=k+1).value=count
+        ws.cell(row=i+2,column=k+2).value=round(count*100/len(lectures),2)
+
+    
+
+    wb.save(r"output/attendance_report_consolidated.xlsx")
             
         
 from platform import python_version
