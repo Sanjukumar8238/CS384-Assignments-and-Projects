@@ -44,7 +44,54 @@ def attendance_report():                                            # Function t
     for i in range(len(lectures)):
         date_mapping[lectures[i]]=i
 
-             
+    matrix=[[[0 for col in range(4)] for col in range(n)] for row in range(len(lectures))]
+
+    for i in df.index:                                              # Iterating through the dataframe of input_attendace file
+        try:                                                
+            date_and_time=df['Timestamp'][i].split()                # Storing date and time from the column 'Timestamp'
+            roll_no_and_name=df['Attendance'][i]                    # Storing roll number and name from the column 'Attendance'
+            roll_no=roll_no_and_name.split()[0]                     # Finding roll number by splitting the variable roll_no_and_name
+            date=date_and_time[0]                                   # Finding date from date_and_time variable
+            time=date_and_time[1].split(':')[0]                     # Finding hour of time from date and time variable by splitting
+            
+            if(roll_no in roll_numbers and date in lectures):
+                matrix[date_mapping[date]][rolls[roll_no]][0]+=1
+                if(time=='14' or date_and_time[1]=='15:00'):
+                    if(matrix[date_mapping[date]][rolls[roll_no]][1]==0):
+                        matrix[date_mapping[date]][rolls[roll_no]][1]+=1
+                    else:
+                        matrix[date_mapping[date]][rolls[roll_no]][2]+=1
+                else:
+                    matrix[date_mapping[date]][rolls[roll_no]][3]+=1
+            
+        except:
+            continue                                                # If any error occurs move to next row
+            
+    try:
+        os.mkdir('output')
+    except:
+        pass
+
+    for i in range(n):                                            # For creating individual ROLL_NO.csv file
+        
+        wb=openpyxl.Workbook()
+        ws=wb.active
+        header_list=['Date','Roll','Name','Total Attendance Count','Real','Duplicate','Invalid','Absent']
+        for j in range(8):
+            ws.cell(row=1,column=j+1).value=header_list[j]
+        ws.cell(row=2,column=2).value=roll_numbers[i]
+        ws.cell(row=2,column=3).value=name[roll_numbers[i]]
+        for j in range(len(lectures)):
+            ws.cell(row=j+3,column=1).value=lectures[j]
+            for k in range(4):
+                ws.cell(row=j+3,column=k+4).value=matrix[j][i][k]
+            if(matrix[j][i][1]==0):
+                ws.cell(row=j+3,column=8).value=1
+            else:
+                ws.cell(row=j+3,column=8).value=0
+        wb.save(r"output/%s.xlsx"%roll_numbers[i])
+    
+            
         
 from platform import python_version
 ver = python_version()
