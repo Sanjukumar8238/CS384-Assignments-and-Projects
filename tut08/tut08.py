@@ -29,6 +29,94 @@ def scorecard():
 	did_not_bat1=[]
 	did_not_bat2=[]
 
+	def find_indexof_bowler_batsman(bowler,batsman,x):
+		temp=[]
+		if(x==1):
+			for i in range(len(bat1)):
+				if(bat1[i]==batsman):
+					temp.append(i)
+					break
+			for i in range(len(bowl1)):
+				if(bowl1[i]==bowler):
+					temp.append(i)
+					break
+		else:
+			for i in range(len(bat2)):
+				if(bat2[i]==batsman):
+					temp.append(i)
+					break
+			for i in range(len(bowl2)):
+				if(bowl2[i]==bowler):
+					temp.append(i)
+					break
+		return temp
+	def no_run(t1,t2,bowler,batsman,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t1[x[0]][2]+=1
+		t2[x[1]][0]+=1
+	def runs(t1,t2,bowler,batsman,y,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t1[x[0]][2]+=1
+		t2[x[1]][0]+=1
+		t1[x[0]][1]+=y
+		t2[x[1]][2]+=y
+		
+	def wide(t1,t2,bowler,batsman,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t2[x[1]][5]+=1
+		t2[x[1]][2]+=1
+	def wides(t1,t2,bowler,batsman,z,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t2[x[1]][5]+=z
+		t2[x[1]][2]+=z
+		
+	def byes(t1,t2,bowler,batsman,z,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t1[x[0]][2]+=1
+		t2[x[1]][0]+=1
+		
+	def caught_out(t1,t2,bowler,batsman,catcher,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t1[x[0]][2]+=1
+		t2[x[1]][0]+=1
+		t1[x[0]][0]='c '+catcher+' b '+bowler
+		t2[x[1]][3]+=1
+		
+	def lbw(t1,t2,bowler,batsman,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t1[x[0]][2]+=1
+		t2[x[1]][0]+=1
+		t2[x[1]][3]+=1
+		t1[x[0]][0]='lbw b '+bowler
+		
+	def bowled(t1,t2,bowler,batsman,m):
+		x=find_indexof_bowler_batsman(bowler,batsman,m)
+		t1[x[0]][2]+=1
+		t2[x[1]][0]+=1
+		t2[x[1]][3]+=1
+		t1[x[0]][0]='b '+bowler
+		
+	def bowls_to_overs(t):
+		for i in t:
+			res=str(i[0]//6)
+			if(i[0]%6!=0):
+				res+='.'+str(i[0]%6)
+			i[0]=res
+	def eco_calc(t):
+		for i in t:
+			temp=i[2]*6/i[0]
+			i[6]='{0:.1f}'.format(temp)+'0'
+	def SR_calc(t):
+		for i in t:
+			temp=i[1]*100/i[2]
+			i[5]='{0:.2f}'.format(temp)
+	def total_score_calc(t1,t2,total1):
+		for i in t1:
+			total1[2]+=i[2]
+		res=str(total1[2]//6)
+		if(total1[2]%6!=0):
+			res+='.'+str(total1[2]%6)
+		total1[2]=res
 
 
 	file1=open('teams.txt','r')
@@ -56,6 +144,8 @@ def scorecard():
 	
 	
 
+
+	
 ###Code
 
 from platform import python_version
