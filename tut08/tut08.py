@@ -342,6 +342,69 @@ def scorecard():
 	total_score_calc(table3,table4,total1=total2)
 	
 
+	file1.close()
+	file=open('Scorecard.txt','w')
+	file.write("{: >0} {: >89}".format(*['Pakistan Innings',str(total1[0])+'-'+str(total1[1])+' ('+total1[2]+' Ov)\n']))
+	file.write('\n')
+	file.write("{: <20} {: ^45}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}".format(*['Batter','','R','B','4s','6s','SR\n']))
+	for i in range(len(bat1)):
+		file.write("{: <20} {: ^45}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}".format(*[bat1[i],table1[i][0],table1[i][1],table1[i][2],table1[i][3],table1[i][4],str(table1[i][5])+'\n']))
+	file.write("{: <20} {: <48}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}".format(*['Extras','',str(extra1[0])+' (b '+str(extra1[1])+', lb '+str(extra1[2])+', w '+str(extra1[3])+', nb '+str(extra1[4])+', p '+str(extra1[5])+')','','','','\n']))
+	file.write("{: <20} {: >71}".format(*['Total',str(total1[0])+' ('+str(total1[1])+' wkts, '+str(total1[2])+' Ov)\n']))
+	file.write('\n')
+	file.write("{: <20} {: >8}".format(*['Fall of Wickets','\n']))
+	temp=''
+	for i in range(len(fall_of_wickets1)):
+		temp+=fall_of_wickets1[i]
+		if(i!=len(fall_of_wickets1)-1):
+			temp+=', '
+	lines=tr.wrap(temp, width=106)
+	for i in lines:
+		file.write(i+'\n')
+	file.write('\n')
+	file.write("{: <49} {: ^8}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}{: >8}".format(*['Bowler','O','M','R','W','NB','WD','ECO\n']))
+	for i in range(len(bowl1)):
+		file.write("{: <49} {: ^8}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}{: >8}".format(*[bowl1[i],table2[i][0],table2[i][1],table2[i][2],table2[i][3],table2[i][4],table2[i][5],str(table2[i][6])+'\n']))
+	file.write('\n')
+	file.write("{: <35} {: ^35}{: >35}".format(*['Powerplays','Overs','Runs\n']))
+	file.write("{: <35} {: ^35}{: >35}".format(*['Mandatory','0.1-6',str(power_play1)+'\n']))
+	file.write('\n')
+	file.write('\n')
+	file.write('\n')
+
+
+	file.write("{: >0} {: >92}".format(*['India Innings',str(total2[0])+'-'+str(total2[1])+' ('+total2[2]+' Ov)\n']))
+	file.write('\n')
+	file.write("{: <20} {: ^45}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}".format(*['Batter','','R','B','4s','6s','SR\n']))
+	for i in range(len(bat2)):
+		file.write("{: <20} {: ^45}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}".format(*[bat2[i],table3[i][0],table3[i][1],table3[i][2],table3[i][3],table3[i][4],str(table3[i][5])+'\n']))
+	file.write("{: <20} {: <48}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}".format(*['Extras','',str(extra2[0])+' (b '+str(extra2[1])+', lb '+str(extra2[2])+', w '+str(extra2[3])+', nb '+str(extra2[4])+', p '+str(extra2[5])+')','','','','\n']))
+	file.write("{: <20} {: >71}".format(*['Total',str(total2[0])+' ('+str(total2[1])+' wkts, '+str(total2[2])+' Ov)\n']))
+	temp=''
+	for i in range(len(did_not_bat2)):
+		temp+=did_not_bat2[i]
+		if(i!=len(did_not_bat2)-1):
+			temp+=', '
+	file.write("{: <20} {: >71}".format(*['Did not bat',temp+'\n']))
+	
+	file.write('\n')
+	file.write("{: <20} {: >8}".format(*['Fall of Wickets','\n']))
+	temp=''
+	for i in range(len(fall_of_wickets2)):
+		temp+=fall_of_wickets2[i]
+		if(i!=len(fall_of_wickets2)-1):
+			temp+=', '
+	lines=tr.wrap(temp, width=106)
+	for i in lines:
+		file.write(i+'\n')
+	file.write('\n')
+	file.write("{: <49} {: ^8}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}{: >8}".format(*['Bowler','O','M','R','W','NB','WD','ECO\n']))
+	for i in range(len(bowl2)):
+		file.write("{: <49} {: ^8}{: ^8}{: ^8}{: ^8}{: ^8}{: >8}{: >8}".format(*[bowl2[i],table4[i][0],table4[i][1],table4[i][2],table4[i][3],table4[i][4],table4[i][5],str(table4[i][6])+'\n']))
+	file.write('\n')
+	file.write("{: <35} {: ^35}{: >35}".format(*['Powerplays','Overs','Runs\n']))
+	file.write("{: <35} {: ^35}{: >35}".format(*['Mandatory','0.1-6',str(power_play2)+'\n']))
+	
 ###Code
 
 from platform import python_version
