@@ -133,7 +133,7 @@ def attendance_report():                                            # Function t
             subject = "Consolidated Attendace Report"
             body = "The report is attached with this mail."
             sender_email = input("Enter sender email : ")
-            receiver_email = "sanjuphogat8238@gmail.com"
+            receiver_email = "cs3842022@gmail.com"
             password = input("Type your password and press enter:")
 
             # Create a multipart message and set headers
