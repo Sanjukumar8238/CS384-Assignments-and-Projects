@@ -680,8 +680,7 @@ st.subheader("Different Filtering Method")#displaying the subheading
 st.text('1. C\n2. S\n3. A\n4. C & S\n5. C & A\n6. S & A\n7. C & S & A\n8. all combine')# showing the user to chose form this only
 # tch = int(input('Chose Filtering Method From Above:'))
 tch=st.number_input("Chose Filtering Method From Above:",key='4',min_value=0)#asking user for input
-if(tch>8):
-    st.warning("Please give correct input!!!")#warning in case worng input is given
+
 if tch == 1:
     # corr = int(input('Enter thresold value C:'))
     corr=st.number_input('Enter thresold value C:',key='5',min_value=1)
@@ -724,6 +723,7 @@ elif tch == 7 or tch==8:
     k=st.number_input('Enter k value for A:',key='8')
 else:
     print('Please enter correct choice...')
+    st.warning("Please give correct input!!!")#warning in case worng input is given
 print("*"*25)
 
 
