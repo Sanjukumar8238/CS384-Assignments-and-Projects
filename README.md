@@ -1,7 +1,3 @@
-Here’s a `README.md` file for the [CS384-Assignments-and-Projects](https://github.com/Sanjukumar8238/CS384-Assignments-and-Projects) repository:
-
----
-
 # CS384: Assignments and Projects
 
 ## Overview
